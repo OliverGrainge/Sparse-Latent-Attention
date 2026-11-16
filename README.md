@@ -34,6 +34,7 @@ uv run python scripts/eval_pg19.py --attn sdpa --latent checkpoints/latent_r512_
 uv run python scripts/eval_niah.py --latent checkpoints/latent_r512_16k/latent.pt --indexer checkpoints/indexer/indexer.pt --out results/niah_sparse_latent.json
 uv run python scripts/bench_decode.py             # -> results/bench_decode.json (per-layer attention)
 uv run python scripts/bench_e2e.py                # -> results/bench_e2e.json (whole model + memory)
+uv run python scripts/bench_kernel.py             # -> results/bench_kernel.json (fused kernel profile)
 uv run python scripts/selection_map.py           # -> results/selection_map.json (which tokens each layer reads)
 uv run python scripts/plot_results.py             # -> results/figures/
 ```

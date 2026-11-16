@@ -106,8 +106,7 @@ model. And both get worse at 32K, twice the length they were trained on.
 
 ## The kernel
 
-The expensive step is rebuilding keys and values, so I fused it into the
-attention kernel:
+The expensive step is rebuilding keys and values, so I fused it into the attention kernel:
 
 ![The fused kernel](figures/kernel.png)
 
@@ -115,20 +114,17 @@ Each decode step, per layer:
 
 ```
 scores = indexer(q, all indexer keys)      # Triton, 128 bytes per token
-idx    = topk(scores, 2048)                # torch, sinks and recent tokens forced in
+idx    = topk(scores, 2048)                # torch, first and recent tokens forced in
 out    = sparse_latent_attention(q, cache, W_up, idx)   # Triton, the diagram above
 ```
 
-Inside the last kernel, each block of 32 latents is gathered, multiplied by
-$W_{\text{up}}$, normalised, rotated by its own position, scored against the
-query and folded into a running softmax. The rebuilt keys and values live
-only inside the kernel.
+Inside the last kernel, each block of 32 latents is gathered, multiplied by the up-projection, normalised, rotated by its own position, scored against the query and folded into a running softmax. The rebuilt keys and values live only inside the kernel.
 
 ![Where the time goes](figures/decode_latency.png)
 
-The fused kernel takes about 50 µs per layer whether the context is 2K or
-128K. What grows now is `torch.topk`, which is more than half the step at
-128K. That is the next thing to write.
+The fused kernel takes about 50 µs per layer whether the context is 2K or 128K. What grows now is `torch.topk`, which is more than half the step at 128K. That is the next thing to write.
+
+**[How the kernel was built, and its profile →](fused-kernel.md)**
 
 ## Summary
 

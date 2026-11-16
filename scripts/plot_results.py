@@ -386,7 +386,43 @@ def fig_decode():
     save(fig, "decode_latency")
 
 
+def fig_kernel_profile():
+    """The fused kernel alone: what its cost does and does not depend on."""
+    d = load("bench_kernel.json")
+    if d is None:
+        return
+    fig, axes = plt.subplots(1, 3, figsize=(11, 3.9), gridspec_kw={"wspace": 0.32})
+    panels = [("context", "context", "Context length: no effect", "tokens in the cache (k = 2,048)", ctx_label),
+              ("topk", "topk", "Tokens kept: grows with k", "tokens attended, k (32K context)", ctx_label),
+              ("programs", "programs", "Splitting the work: 18x", "Triton programs (k = 2,048)", lambda v, _=None: str(int(v)))]
+    for ax, (key, xk, title, xlabel, fmt) in zip(axes, panels):
+        xs = [r[xk] for r in d[key]]
+        ys = [r["us"] for r in d[key]]
+        ax.plot(xs, ys, color=AQUA, marker="o", zorder=3)
+        ax.set_xscale("log", base=2)
+        ax.set_xticks(xs)
+        ax.xaxis.set_major_formatter(mticker.FuncFormatter(fmt))
+        ax.xaxis.set_minor_locator(mticker.NullLocator())
+        ax.set_xlabel(xlabel)
+        ax.set_title(title, fontfamily=SERIF, fontsize=12.5, fontweight="bold", loc="left", pad=10)
+        ax.xaxis.grid(False)
+        for x, y in ((xs[0], ys[0]), (xs[-1], ys[-1])):
+            ax.annotate(f"{y:.0f}", (x, y), xytext=(0, 9), textcoords="offset points", ha="center", fontsize=9.5,
+                        color=INK2)
+    axes[0].set_ylim(0, 100)
+    axes[0].set_ylabel("µs per call, one layer")
+    axes[1].set_ylim(0, 180)
+    axes[2].set_yscale("log")
+    axes[2].set_yticks([50, 100, 200, 400, 800], ["50", "100", "200", "400", "800"])
+    axes[2].yaxis.set_minor_locator(mticker.NullLocator())
+    axes[2].set_ylim(35, 1300)
+    headline(fig, "What the kernel's cost depends on",
+             "The fused kernel on its own: one layer of Qwen3-1.7B shapes, batch 1, RTX 5090.", y=1.04)
+    save(fig, "kernel_profile")
+
+
 if __name__ == "__main__":
+    fig_kernel_profile()
     fig_selection()
     fig_cost()
     fig_recall()
