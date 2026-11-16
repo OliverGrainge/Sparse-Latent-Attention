@@ -1,0 +1,50 @@
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files: 100%|##########| 9/9 [00:00<00:00, 3000.46it/s]
+latent KV rank 512
+indexer params: 33.5M
+[eval    0] KL 13.8224  recall indexer/oracle/window  k=256: 0.803/0.886/0.388 k=512: 0.809/0.917/0.421 k=1024: 0.821/0.945/0.451 k=2048: 0.845/0.970/0.480
+step    0  KL 12.9989  (layer 0 1.379, last 29.901)  gnorm 12154.055  lr 1.00e-04  4.9s/step  mem 5.5GiB
+step   10  KL 1.2101  (layer 0 0.988, last 1.009)  gnorm 102.948  lr 1.10e-03  5.8s/step  mem 5.8GiB
+step   20  KL 1.2073  (layer 0 0.793, last 0.911)  gnorm 245.966  lr 2.00e-03  5.9s/step  mem 5.8GiB
+step   30  KL 1.0612  (layer 0 0.495, last 1.037)  gnorm 46.395  lr 2.00e-03  6.0s/step  mem 5.8GiB
+step   40  KL 0.9102  (layer 0 0.330, last 1.127)  gnorm 58.245  lr 1.99e-03  6.0s/step  mem 5.8GiB
+step   50  KL 0.8471  (layer 0 0.300, last 1.150)  gnorm 57.262  lr 1.97e-03  5.9s/step  mem 5.8GiB
+step   60  KL 0.8236  (layer 0 0.212, last 0.946)  gnorm 88.363  lr 1.95e-03  5.7s/step  mem 5.8GiB
+step   70  KL 0.7769  (layer 0 0.219, last 1.005)  gnorm 95.263  lr 1.92e-03  5.7s/step  mem 5.8GiB
+step   80  KL 0.7272  (layer 0 0.197, last 1.131)  gnorm 72.901  lr 1.89e-03  5.8s/step  mem 5.8GiB
+step   90  KL 0.7491  (layer 0 0.190, last 1.102)  gnorm 175.177  lr 1.85e-03  5.8s/step  mem 5.8GiB
+[eval  100] KL 0.7586  recall indexer/oracle/window  k=256: 0.864/0.886/0.388 k=512: 0.897/0.917/0.421 k=1024: 0.927/0.945/0.451 k=2048: 0.954/0.970/0.480
+step  100  KL 0.7086  (layer 0 0.182, last 1.036)  gnorm 113.306  lr 1.80e-03  6.0s/step  mem 5.8GiB
+step  110  KL 0.6634  (layer 0 0.172, last 1.096)  gnorm 67.676  lr 1.75e-03  5.9s/step  mem 5.8GiB
+step  120  KL 0.6811  (layer 0 0.152, last 1.015)  gnorm 118.428  lr 1.69e-03  5.9s/step  mem 5.8GiB
+step  130  KL 0.6515  (layer 0 0.154, last 1.032)  gnorm 61.527  lr 1.63e-03  5.8s/step  mem 5.8GiB
+step  140  KL 0.6838  (layer 0 0.149, last 1.081)  gnorm 180.792  lr 1.57e-03  5.8s/step  mem 5.8GiB
+step  150  KL 0.6755  (layer 0 0.164, last 1.014)  gnorm 116.838  lr 1.50e-03  5.8s/step  mem 5.8GiB
+step  160  KL 0.6270  (layer 0 0.152, last 1.108)  gnorm 57.971  lr 1.43e-03  5.7s/step  mem 5.8GiB
+step  170  KL 0.6204  (layer 0 0.136, last 0.964)  gnorm 103.960  lr 1.36e-03  5.6s/step  mem 5.8GiB
+step  180  KL 0.6437  (layer 0 0.130, last 1.031)  gnorm 78.536  lr 1.28e-03  5.6s/step  mem 5.8GiB
+step  190  KL 0.6198  (layer 0 0.143, last 1.128)  gnorm 97.654  lr 1.21e-03  5.5s/step  mem 5.8GiB
+[eval  200] KL 0.6489  recall indexer/oracle/window  k=256: 0.866/0.886/0.388 k=512: 0.900/0.917/0.421 k=1024: 0.929/0.945/0.451 k=2048: 0.956/0.970/0.480
+step  200  KL 0.5898  (layer 0 0.138, last 1.046)  gnorm 49.075  lr 1.13e-03  5.6s/step  mem 5.8GiB
+step  210  KL 0.5725  (layer 0 0.135, last 1.022)  gnorm 54.453  lr 1.05e-03  5.5s/step  mem 5.8GiB
+step  220  KL 0.5657  (layer 0 0.131, last 1.067)  gnorm 68.440  lr 9.72e-04  5.5s/step  mem 5.8GiB
+step  230  KL 0.5586  (layer 0 0.141, last 1.110)  gnorm 56.161  lr 8.94e-04  5.3s/step  mem 5.8GiB
+step  240  KL 0.5442  (layer 0 0.129, last 1.024)  gnorm 36.971  lr 8.17e-04  5.2s/step  mem 5.8GiB
+step  250  KL 0.5425  (layer 0 0.129, last 0.994)  gnorm 39.460  lr 7.42e-04  5.0s/step  mem 5.8GiB
+step  260  KL 0.5238  (layer 0 0.129, last 0.986)  gnorm 35.709  lr 6.68e-04  4.9s/step  mem 5.8GiB
+step  270  KL 0.5299  (layer 0 0.135, last 1.032)  gnorm 36.454  lr 5.98e-04  4.8s/step  mem 5.8GiB
+step  280  KL 0.5256  (layer 0 0.126, last 0.981)  gnorm 26.412  lr 5.30e-04  4.7s/step  mem 5.8GiB
+step  290  KL 0.5163  (layer 0 0.127, last 1.032)  gnorm 50.725  lr 4.66e-04  4.6s/step  mem 5.8GiB
+[eval  300] KL 0.5755  recall indexer/oracle/window  k=256: 0.868/0.886/0.388 k=512: 0.902/0.917/0.421 k=1024: 0.931/0.945/0.451 k=2048: 0.958/0.970/0.480
+step  300  KL 0.4905  (layer 0 0.120, last 0.931)  gnorm 18.299  lr 4.07e-04  4.5s/step  mem 5.8GiB
+step  310  KL 0.4926  (layer 0 0.118, last 0.962)  gnorm 39.631  lr 3.51e-04  4.5s/step  mem 5.8GiB
+step  320  KL 0.5210  (layer 0 0.128, last 1.037)  gnorm 20.338  lr 3.00e-04  4.4s/step  mem 5.8GiB
+step  330  KL 0.5143  (layer 0 0.122, last 1.041)  gnorm 25.603  lr 2.55e-04  4.3s/step  mem 5.8GiB
+step  340  KL 0.5317  (layer 0 0.118, last 1.031)  gnorm 37.043  lr 2.14e-04  4.2s/step  mem 5.8GiB
+step  350  KL 0.5085  (layer 0 0.123, last 0.952)  gnorm 15.849  lr 1.80e-04  4.2s/step  mem 5.8GiB
+step  360  KL 0.5229  (layer 0 0.112, last 1.006)  gnorm 8.771  lr 1.51e-04  4.1s/step  mem 5.8GiB
+step  370  KL 0.5066  (layer 0 0.119, last 1.055)  gnorm 24.813  lr 1.29e-04  4.1s/step  mem 5.8GiB
+step  380  KL 0.5391  (layer 0 0.129, last 1.005)  gnorm 8.986  lr 1.13e-04  4.0s/step  mem 5.8GiB
+step  390  KL 0.5142  (layer 0 0.121, last 1.031)  gnorm 11.987  lr 1.03e-04  3.9s/step  mem 5.8GiB
+step  399  KL 0.5141  (layer 0 0.133, last 1.106)  gnorm 13.090  lr 1.00e-04  3.9s/step  mem 5.8GiB
+[eval  400] KL 0.5630  recall indexer/oracle/window  k=256: 0.868/0.886/0.388 k=512: 0.902/0.917/0.421 k=1024: 0.932/0.945/0.451 k=2048: 0.958/0.970/0.480
+done; saved checkpoints\indexer\indexer.pt

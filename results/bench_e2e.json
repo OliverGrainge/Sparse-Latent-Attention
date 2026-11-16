@@ -1,0 +1,102 @@
+{
+ "topk": 2048,
+ "batch": 1,
+ "configs": {
+  "dense": [
+   {
+    "context": 4096,
+    "ms_per_token": 16.705474999616854,
+    "ms_per_token_graph": 6.771070000831969,
+    "cache_GiB": 0.4375
+   },
+   {
+    "context": 16384,
+    "ms_per_token": 18.23607500118669,
+    "ms_per_token_graph": 9.219044999917969,
+    "cache_GiB": 1.75
+   },
+   {
+    "context": 32768,
+    "ms_per_token": 19.53710000088904,
+    "ms_per_token_graph": 14.543135001440533,
+    "cache_GiB": 3.5
+   },
+   {
+    "context": 65536,
+    "ms_per_token": 27.720209999824874,
+    "ms_per_token_graph": 22.937124999589287,
+    "cache_GiB": 7.0
+   },
+   {
+    "context": 131072,
+    "ms_per_token": 45.446335000451654,
+    "ms_per_token_graph": 40.42442500067409,
+    "cache_GiB": 14.0
+   }
+  ],
+  "latent": [
+   {
+    "context": 4096,
+    "ms_per_token": 18.693789999815635,
+    "ms_per_token_graph": 10.816610002075322,
+    "cache_GiB": 0.109375
+   },
+   {
+    "context": 16384,
+    "ms_per_token": 35.09387499943841,
+    "ms_per_token_graph": 31.5869299985934,
+    "cache_GiB": 0.4375
+   },
+   {
+    "context": 32768,
+    "ms_per_token": 74.08515500137582,
+    "ms_per_token_graph": 70.21631000097841,
+    "cache_GiB": 0.875
+   },
+   {
+    "context": 65536,
+    "ms_per_token": 141.56443999963813,
+    "ms_per_token_graph": 139.24751000013202,
+    "cache_GiB": 1.75
+   },
+   {
+    "context": 131072,
+    "ms_per_token": 284.1096299991477,
+    "ms_per_token_graph": 283.3325199986575,
+    "cache_GiB": 3.5
+   }
+  ],
+  "sparse_latent": [
+   {
+    "context": 4096,
+    "ms_per_token": 32.564224998350255,
+    "ms_per_token_graph": 8.661410000058822,
+    "cache_GiB": 0.123046875
+   },
+   {
+    "context": 16384,
+    "ms_per_token": 27.613310000742786,
+    "ms_per_token_graph": 9.843374998308718,
+    "cache_GiB": 0.4921875
+   },
+   {
+    "context": 32768,
+    "ms_per_token": 28.608960000565276,
+    "ms_per_token_graph": 9.691144997486845,
+    "cache_GiB": 0.984375
+   },
+   {
+    "context": 65536,
+    "ms_per_token": 29.855264999787323,
+    "ms_per_token_graph": 9.833214999525808,
+    "cache_GiB": 1.96875
+   },
+   {
+    "context": 131072,
+    "ms_per_token": 29.639714999939315,
+    "ms_per_token_graph": 8.954654997796752,
+    "cache_GiB": 3.9375
+   }
+  ]
+ }
+}

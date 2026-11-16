@@ -10,9 +10,14 @@ lightning indexer distilled from dense attention (DeepSeek Sparse Attention styl
 - [x] Sliding-window perplexity eval (`src/sla/perplexity.py`)
 - [x] Training data: 99M tokens, PG19-train + FineWeb-Edu, packed at 4K (`scripts/prepare_data.py`)
 - [x] MLA-style latent KV conversion: PCA init + logit distillation (`src/sla/latent.py`, `scripts/train_latent.py`)
-- [ ] Lightning indexer + KL distillation
-- [ ] Top-k sparse attention
-- [ ] Long-context evals (NIAH / RULER / LongBench)
+- [x] Long-context (16K) latent distillation
+- [x] Lightning indexer + per-layer KL distillation (`src/sla/sparse.py`, `scripts/train_indexer.py`)
+- [x] Top-k sparse attention (torch reference) with forced sink + local tokens
+- [x] Fused Triton decode kernels: indexer scores + gather/expand/k_norm/RoPE/attention (`src/sla/kernels.py`)
+- [x] Evals: PG19 ppl vs. context, indexer recall, needle-in-a-haystack, decode latency
+- [ ] Sparse prefill kernel, top-k kernel, RULER / LongBench
+
+**Write-up:** [`writeup/sparse-latent-attention.md`](writeup/sparse-latent-attention.md)
 
 ## Usage
 
@@ -21,7 +26,35 @@ uv sync
 uv run pytest                                   # matches HF reference (fp32 max |dlogit| ~4e-5)
 uv run python scripts/generate.py "Your prompt"
 uv run python scripts/eval_ppl.py --context-lens 512 2048 4096 8192 16384 32768
+
+# sparse latent attention pipeline
+uv run python scripts/train_latent.py --seq-len 16384 --data data/mix_16k --init-latent checkpoints/latent_r512/latent.pt --grad-ckpt --steps 300 --out checkpoints/latent_r512_16k
+uv run python scripts/train_indexer.py            # -> checkpoints/indexer/indexer.pt, results/indexer_recall.json
+uv run python scripts/eval_pg19.py --attn sdpa --latent checkpoints/latent_r512_16k/latent.pt --indexer checkpoints/indexer/indexer.pt --out results/pg19_sparse_latent.json
+uv run python scripts/eval_niah.py --latent checkpoints/latent_r512_16k/latent.pt --indexer checkpoints/indexer/indexer.pt --out results/niah_sparse_latent.json
+uv run python scripts/bench_decode.py             # -> results/bench_decode.json (per-layer attention)
+uv run python scripts/bench_e2e.py                # -> results/bench_e2e.json (whole model + memory)
+uv run python scripts/selection_map.py           # -> results/selection_map.json (which tokens each layer reads)
+uv run python scripts/plot_results.py             # -> results/figures/
 ```
+
+## Sparse latent attention — headline results
+
+Latent KV (rank 512) + lightning indexer (8 heads × 64) selecting k = 2,048
+tokens per query (4 sinks + 128 recent always kept). Cache: 1,152 B/token/layer
+vs 4,096 dense (3.6× smaller).
+
+| | dense | latent (full attn) | **sparse latent** | latent, sink+window |
+|---|---|---|---|---|
+| PG19 ppl @ 4K / 16K context | 20.21 / 20.11 | 19.87 / 19.64 | **19.81 / 19.67** | 20.62 / 20.71 |
+| NIAH, 4K–32K | 100% | 100% | **100%** | 25% |
+| attention mass kept (k = 2K) | — | — | **95.8%** (oracle 97.0%) | 92.6% |
+| decode attn / layer @ 128K | 1.13 ms | 8.41 ms | **0.19 ms** (Triton) | — |
+| whole model, ms/token @ 128K (CUDA graphs) | 40.4 | 283 | **9.0** | — |
+| KV cache @ 128K | 14.0 GiB | 3.5 GiB | **3.9 GiB** | — |
+
+![](results/figures/cost.png)
+![](results/figures/quality.png)
 
 ## Dense baseline — Qwen3-1.7B, bf16, WikiText-2 test (non-overlapping windows)
 
@@ -94,4 +127,5 @@ the student broader. At each model's best temperature the latent model is ~3% wo
 Long context breaks past the training length: the latent model tracks dense up to
 8K but degrades at 16K (20.46) and 32K (21.89) where dense keeps improving
 (19.96). Chat generation also degrades (ignores instructions, stray `</think>`),
-since training used raw text only. Next: long-sequence training and chat data in the mix.
+since training used raw text only. Long-sequence (16K) training since fixed the
+context degradation up to 16K (see above); chat data is still not in the mix.

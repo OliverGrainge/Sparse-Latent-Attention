@@ -18,12 +18,25 @@ def _chunk_kl(lm_head_w: torch.Tensor, h_s: torch.Tensor, h_t: torch.Tensor) -> 
     return F.kl_div(log_s, log_t, log_target=True, reduction="sum")
 
 
+def _teacher_hidden(model: Qwen3, ids: torch.Tensor) -> torch.Tensor:
+    """Hidden states of the original model: dense attention over full K/V."""
+    topk, selector = model.layers[0].attn.sparse_topk, model.layers[0].attn.selector
+    model.set_latent(False)
+    for layer in model.layers:
+        layer.attn.sparse_topk = 0
+    try:
+        with torch.no_grad():
+            return model.hidden_states(ids)
+    finally:
+        for layer in model.layers:
+            layer.attn.sparse_topk, layer.attn.selector = topk, selector
+        model.set_latent(True)
+
+
 def distill_loss(model: Qwen3, ids: torch.Tensor, chunk: int = 1024) -> tuple[torch.Tensor, dict]:
-    """Mean per-token KL(teacher || student). Returns (loss, metrics)."""
-    with torch.no_grad():
-        model.set_latent(False)
-        h_t = model.hidden_states(ids)
-    model.set_latent(True)
+    """Mean per-token KL(teacher || student). The student is the model as
+    configured (latent KV, plus sparse attention if enabled). Returns (loss, metrics)."""
+    h_t = _teacher_hidden(model, ids)
     h_s = model.hidden_states(ids)
 
     W = model.lm_head.weight
@@ -43,9 +56,7 @@ def evaluate(model: Qwen3, batches, chunk: int = 1024) -> dict:
     n = 0
     for ids in batches:
         ids = ids.to(model.embed.weight.device)
-        model.set_latent(False)
-        h_t = model.hidden_states(ids)
-        model.set_latent(True)
+        h_t = _teacher_hidden(model, ids)
         h_s = model.hidden_states(ids)
         for t0 in range(0, ids.shape[1] - 1, chunk):
             sl = slice(t0, min(t0 + chunk, ids.shape[1] - 1))

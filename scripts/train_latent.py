@@ -45,6 +45,10 @@ def main():
     p.add_argument("--weight-decay", type=float, default=0.0)
     p.add_argument("--eval-every", type=int, default=100)
     p.add_argument("--val-seqs", type=int, default=16)
+    p.add_argument("--init-latent", default=None, help="continue from a trained latent.pt instead of PCA")
+    p.add_argument("--grad-ckpt", action="store_true", help="activation checkpointing (needed for >=16K)")
+    p.add_argument("--indexer", default=None, help="trained indexer.pt: distil with sparse attention on")
+    p.add_argument("--topk", type=int, default=2048)
     p.add_argument("--out", default=None)
     p.add_argument("--seed", type=int, default=0)
     args = p.parse_args()
@@ -56,8 +60,15 @@ def main():
     model.attn_impl = "sdpa"
     model.requires_grad_(False)
 
-    calib = torch.load(args.calib_path, map_location="cuda")
-    init_latent_from_pca(model, calib, args.rank, mode=args.pca_mode)
+    model.grad_checkpointing = args.grad_ckpt
+    if args.init_latent:
+        args.rank = model.load_latent(args.init_latent)
+    else:
+        calib = torch.load(args.calib_path, map_location="cuda")
+        init_latent_from_pca(model, calib, args.rank, mode=args.pca_mode)
+    if args.indexer:  # sparse stage: the (frozen) indexer picks keys, the latent adapts to it
+        model.load_indexer(args.indexer, topk=args.topk)
+        print(f"sparse attention: top-{args.topk}")
     params = [p_ for n, p_ in model.named_parameters() if ".latent." in n]
     for p_ in params:
         p_.requires_grad_(True)

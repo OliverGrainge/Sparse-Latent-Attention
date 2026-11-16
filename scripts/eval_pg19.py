@@ -32,6 +32,9 @@ def main():
     p.add_argument("--attn", default="eager", choices=["eager", "sdpa"])
     p.add_argument("--by-position", action="store_true", help="also compute the per-position curve")
     p.add_argument("--latent", default=None, help="path to a trained latent.pt (MLA conversion)")
+    p.add_argument("--indexer", default=None, help="path to a trained indexer.pt (sparse attention)")
+    p.add_argument("--topk", type=int, default=2048)
+    p.add_argument("--selector", default="indexer", choices=["indexer", "sink_window"])
     p.add_argument("--out", default="results/pg19_dense.json")
     args = p.parse_args()
 
@@ -39,11 +42,20 @@ def main():
     model.attn_impl = args.attn
     if args.latent:
         print(f"latent KV rank {model.load_latent(args.latent)} from {args.latent}")
+    if args.indexer or args.selector == "sink_window":
+        if args.indexer:
+            model.load_indexer(args.indexer)
+        else:
+            model.add_indexer()  # unused by the sink_window selector, but keeps the code path uniform
+        model.set_sparse(args.topk, args.selector)
+        print(f"sparse attention: top-{args.topk} by {args.selector}")
     books = load_pg19_test_books(load_tokenizer(model), num_books=args.num_books, min_tokens=args.end)
     lens = torch.tensor([b.numel() for b in books])
     print(f"PG19 test: {len(books)} books with >= {args.end:,} tokens (median {int(lens.median()):,})")
 
-    result = {"model": args.model, "attn": args.attn, "end": args.end, "score_len": args.score_len,
+    result = {"model": args.model, "attn": args.attn, "latent": args.latent, "indexer": args.indexer,
+              "topk": args.topk if (args.indexer or args.selector == "sink_window") else None,
+              "selector": args.selector, "end": args.end, "score_len": args.score_len,
               "num_books": len(books), "tokens_scored": len(books) * args.score_len}
 
     t = time.perf_counter()

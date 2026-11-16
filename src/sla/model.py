@@ -18,6 +18,7 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.utils.checkpoint import checkpoint
 
 
 # --------------------------------------------------------------------------- #
@@ -130,10 +131,11 @@ def causal_attention(
     if impl != "eager":
         raise ValueError(f"unknown attention impl {impl!r}")
 
-    # Group query heads under their shared KV head: (B, Hkv, group, T, D).
+    # Group query heads under their shared KV head: (B, Hkv, group, T, D). The group
+    # and query dims are folded into the matmul rows, so K/V are never broadcast
+    # (broadcasting would make torch materialise an expanded copy of the cache).
     qg = q.view(B, Hkv, group, T, D)
-    kt = k.unsqueeze(2).transpose(-1, -2)                            # (B, Hkv, 1, D, S)
-    vv = v.unsqueeze(2)                                              # (B, Hkv, 1, S, D)
+    kt = k.transpose(-1, -2)                                         # (B, Hkv, D, S)
     key_pos = torch.arange(S, device=q.device)
 
     out = torch.empty_like(qg)
@@ -141,12 +143,14 @@ def causal_attention(
     chunk = max(1, min(T, ATTN_SCORE_BUDGET_BYTES // (B * H * S * 4)))
     for t0 in range(0, T, chunk):
         t1 = min(T, t0 + chunk)
-        scores = (qg[:, :, :, t0:t1] @ kt).float() * scale         # (B, Hkv, g, c, S)
+        c = t1 - t0
+        rows = qg[:, :, :, t0:t1].reshape(B, Hkv, group * c, D)
+        scores = (rows @ kt).view(B, Hkv, group, c, S).float() * scale  # (B, Hkv, g, c, S)
         q_pos = torch.arange(q_start + t0, q_start + t1, device=q.device)
         visible = key_pos[None, :] <= q_pos[:, None]                # (c, S)
         scores = scores.masked_fill(~visible, float("-inf"))
         probs = scores.softmax(dim=-1).to(v.dtype)
-        out[:, :, :, t0:t1] = probs @ vv
+        out[:, :, :, t0:t1] = (probs.view(B, Hkv, group * c, S) @ v).view(B, Hkv, group, c, D)
     return out.view(B, H, T, D)
 
 
@@ -158,7 +162,8 @@ class KVCache:
     are re-expanded from it on every step - that is the whole point of MLA.
     """
 
-    def __init__(self, cfg: ModelConfig, batch: int, max_len: int, device, dtype, latent_rank: int | None = None):
+    def __init__(self, cfg: ModelConfig, batch: int, max_len: int, device, dtype, latent_rank: int | None = None,
+                 index_dim: int | None = None):
         self.max_len = max_len
         self.length = 0  # tokens already stored (shared by all layers)
         self.latent_rank = latent_rank
@@ -169,6 +174,8 @@ class KVCache:
             self.v = [torch.empty(shape, device=device, dtype=dtype) for _ in range(L)]
         else:
             self.c = [torch.empty((batch, max_len, latent_rank), device=device, dtype=dtype) for _ in range(L)]
+        # Lightning-indexer keys (one small vector per token), when sparse attention is on.
+        self.ik = None if index_dim is None else             [torch.empty((batch, max_len, index_dim), device=device, dtype=dtype) for _ in range(L)]
 
     def _check(self, end: int):
         if end > self.max_len:
@@ -187,8 +194,15 @@ class KVCache:
         self.c[layer][:, start:end] = c
         return self.c[layer][:, :end]
 
+    def update_index(self, layer: int, ik: torch.Tensor, start: int):
+        end = start + ik.shape[1]
+        self._check(end)
+        self.ik[layer][:, start:end] = ik
+        return self.ik[layer][:, :end]
+
     def nbytes(self) -> int:
         bufs = self.c if self.latent_rank is not None else self.k + self.v
+        bufs = bufs + (self.ik or [])
         return sum(b.numel() * b.element_size() for b in bufs)
 
 
@@ -232,6 +246,11 @@ class Attention(nn.Module):
         # Optional MLA-style latent KV path (see LatentKV); off unless use_latent.
         self.latent: LatentKV | None = None
         self.use_latent = False
+        # Optional lightning indexer + top-k sparse attention (see sparse.py).
+        self.indexer = None
+        self.sparse_topk = 0          # 0 = dense attention
+        self.selector = "indexer"     # or "sink_window" (baseline with the same token budget)
+        self.observer = None          # callback(attn, x, q, k, start_pos), used to train the indexer
 
     def forward(self, x, cos, sin, start_pos: int, cache: KVCache | None, impl: str):
         B, T, _ = x.shape
@@ -239,6 +258,12 @@ class Attention(nn.Module):
 
         q = self.q_norm(self.q_proj(x).view(B, T, H, D)).transpose(1, 2)    # (B, H, T, D)
         q = apply_rope(q, cos, sin)
+
+        if impl == "triton" and self.use_latent and self.sparse_topk and cache is not None and T == 1:
+            o = self._sparse_latent_decode(x, q[:, :, 0], start_pos, cache)            # (B, H, D)
+            return self.o_proj(o.reshape(B, 1, H * D))
+        if impl == "triton":  # the kernels only cover sparse latent decoding; SDPA for the rest
+            impl = "sdpa"
 
         if self.use_latent:
             k, v = self._latent_kv(x, cos, sin, start_pos, cache)
@@ -249,8 +274,57 @@ class Attention(nn.Module):
             if cache is not None:
                 k, v = cache.update(self.layer_idx, k, v, start_pos)
 
-        o = causal_attention(q, k, v, q_start=start_pos, scale=self.scale, impl=impl)
+        if self.observer is not None:
+            self.observer(self, x, q, k, start_pos)
+        if self.sparse_topk:
+            o = self._sparse(x, q, k, v, start_pos, cache)
+        else:
+            o = causal_attention(q, k, v, q_start=start_pos, scale=self.scale, impl=impl)
         return self.o_proj(o.transpose(1, 2).reshape(B, T, H * D))
+
+    def _sparse(self, x, q, k, v, start_pos, cache):
+        from .sparse import sparse_attention
+        positions = torch.arange(start_pos, start_pos + x.shape[1], device=x.device)
+        ik = self.indexer.keys(x, positions)
+        if cache is not None:
+            ik = cache.update_index(self.layer_idx, ik, start_pos)
+        iq, iw = self.indexer.queries(x, positions)
+        return sparse_attention(q, k, v, iq, iw, ik, start_pos, self.sparse_topk, self.scale,
+                                selector=self.selector)
+
+    def _sparse_latent_decode(self, x, q, start_pos, cache):
+        """One decode step with the fused Triton kernels: score every cached token with
+        the indexer, keep the top-k, and attend over them straight from the latent cache."""
+        from .kernels import index_scores_decode, sparse_latent_decode
+        from .sparse import force_keep
+        L, S = self.layer_idx, start_pos + 1
+        pos = torch.arange(start_pos, S, device=x.device)
+        cache.update_latent(L, self.latent.compress(x), start_pos)
+        cache.update_index(L, self.indexer.keys(x, pos), start_pos)
+        iq, iw = self.indexer.queries(x, pos)
+        if S <= self.sparse_topk:
+            idx = torch.arange(S, device=x.device, dtype=torch.int32).expand(x.shape[0], S).contiguous()
+        else:
+            scores = force_keep(index_scores_decode(iq[:, 0], iw[:, 0], cache.ik[L], S), pos)
+            idx = scores.topk(self.sparse_topk, dim=-1, sorted=False).indices.int()
+        w_up_t, inv_freq = self._decode_consts()
+        return sparse_latent_decode(q, cache.c[L], w_up_t, self.k_norm.weight, inv_freq, idx,
+                                    self.scale, self.k_norm.eps, self.cfg.num_kv_heads)
+
+    def _decode_consts(self):
+        """W_up^T in the activation dtype and RoPE inverse frequencies, rebuilt if W_up changes."""
+        up = self.latent.up
+        try:
+            version = up._version
+        except RuntimeError:  # inference tensors have no version counter (and cannot change)
+            version = None
+        key = (up.data_ptr(), version, self.k_norm.weight.dtype)
+        if getattr(self, "_consts_key", None) != key:
+            D = self.cfg.head_dim
+            self._w_up_t = up.detach().to(self.k_norm.weight.dtype).T.contiguous()
+            self._inv_freq = 1.0 / (self.cfg.rope_theta ** (torch.arange(0, D, 2, device=up.device).float() / D))
+            self._consts_key = key
+        return self._w_up_t, self._inv_freq
 
     def _latent_kv(self, x, cos, sin, start_pos, cache):
         """Keys/values reconstructed from the cached latent. k_norm and RoPE are
@@ -306,6 +380,7 @@ class Qwen3(nn.Module):
         if cfg.tie_word_embeddings:
             self.lm_head.weight = self.embed.weight
         self.attn_impl = "eager"
+        self.grad_checkpointing = False  # recompute each block in backward (long-sequence training)
 
     def hidden_states(
         self, input_ids: torch.Tensor, start_pos: int = 0, cache: KVCache | None = None
@@ -316,13 +391,54 @@ class Qwen3(nn.Module):
         positions = torch.arange(start_pos, start_pos + T, device=input_ids.device)
         cos, sin = rope_cos_sin(positions, self.cfg.head_dim, self.cfg.rope_theta, x.dtype)
         for layer in self.layers:
-            x = layer(x, cos, sin, start_pos, cache, self.attn_impl)
+            if self.grad_checkpointing and torch.is_grad_enabled():
+                x = checkpoint(layer, x, cos, sin, start_pos, cache, self.attn_impl, use_reentrant=False)
+            else:
+                x = layer(x, cos, sin, start_pos, cache, self.attn_impl)
         if cache is not None:
             cache.length = start_pos + T
         return self.norm(x)
 
     def forward(self, input_ids, start_pos: int = 0, cache: KVCache | None = None) -> torch.Tensor:
         return self.lm_head(self.hidden_states(input_ids, start_pos, cache))
+
+    # ---- lightning indexer / sparse attention ---------------------------- #
+    def add_indexer(self, **kw) -> None:
+        from .sparse import Indexer
+        dev = self.embed.weight.device
+        for layer in self.layers:
+            layer.attn.indexer = Indexer(self.cfg.hidden_size, **kw).to(dev)
+
+    def set_sparse(self, topk: int, selector: str = "indexer") -> None:
+        """Top-k sparse attention in every layer (0 turns it off)."""
+        for layer in self.layers:
+            if topk and layer.attn.indexer is None:
+                raise RuntimeError("call add_indexer() first")
+            layer.attn.sparse_topk = topk
+            layer.attn.selector = selector
+
+    @property
+    def index_dim(self) -> int | None:
+        idx = self.layers[0].attn.indexer
+        return idx.head_dim if (idx is not None and self.layers[0].attn.sparse_topk) else None
+
+    def indexer_state_dict(self) -> dict:
+        idx = self.layers[0].attn.indexer
+        return {"config": dict(n_heads=idx.n_heads, head_dim=idx.head_dim, rope_dim=idx.rope_dim,
+                               rope_theta=idx.rope_theta),
+                "state": {k: v for k, v in self.state_dict().items() if ".indexer." in k}}
+
+    def load_indexer(self, path: str | Path, topk: int = 0) -> None:
+        ckpt = torch.load(path, map_location=self.embed.weight.device)
+        self.add_indexer(**ckpt["config"])
+        _, unexpected = self.load_state_dict(ckpt["state"], strict=False)
+        if unexpected:
+            raise RuntimeError(f"bad indexer checkpoint: unexpected={unexpected}")
+        self.set_sparse(topk)
+
+    def make_cache(self, batch: int, max_len: int) -> KVCache:
+        w = self.embed.weight
+        return KVCache(self.cfg, batch, max_len, w.device, w.dtype, self.latent_rank, self.index_dim)
 
     # ---- latent KV (MLA conversion) -------------------------------------- #
     def add_latent_kv(self, rank: int) -> None:

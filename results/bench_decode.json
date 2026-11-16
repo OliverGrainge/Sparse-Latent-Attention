@@ -1,0 +1,135 @@
+{
+ "topk": 2048,
+ "unit": "us",
+ "bandwidth_TBps": 1.4260599083567431,
+ "results": [
+  {
+   "context": 1024,
+   "dense_roofline": 2.9411835894279648,
+   "dense": 38.709501064487505,
+   "latent": 154.3434900045395,
+   "sparse_torch": 244.9248983680239,
+   "sparse_triton": 54.021101323242235,
+   "triton_fused_attn": 30.082875518028846,
+   "triton_index_scores": 13.262312320530878,
+   "topk_only": 10.67591348468251,
+   "bytes_per_token": {
+    "dense": 4096,
+    "latent": 1024,
+    "sparse_latent": 1152
+   }
+  },
+  {
+   "context": 2048,
+   "dense_roofline": 5.8823671788559295,
+   "dense": 48.561279480595246,
+   "latent": 186.79623138950598,
+   "sparse_torch": 250.1896625527969,
+   "sparse_triton": 84.5491097920535,
+   "triton_fused_attn": 49.66980139136659,
+   "triton_index_scores": 12.372649352250669,
+   "topk_only": 22.50665904843624,
+   "bytes_per_token": {
+    "dense": 4096,
+    "latent": 1024,
+    "sparse_latent": 1152
+   }
+  },
+  {
+   "context": 4096,
+   "dense_roofline": 11.764734357711859,
+   "dense": 69.55432283318586,
+   "latent": 279.5074664920373,
+   "sparse_torch": 323.90305223288357,
+   "sparse_triton": 88.43388181603254,
+   "triton_fused_attn": 48.95590709580123,
+   "triton_index_scores": 13.721935998058594,
+   "topk_only": 25.756038722172715,
+   "bytes_per_token": {
+    "dense": 4096,
+    "latent": 1024,
+    "sparse_latent": 1152
+   }
+  },
+  {
+   "context": 8192,
+   "dense_roofline": 23.529468715423718,
+   "dense": 104.25618373020097,
+   "latent": 404.5042832793318,
+   "sparse_torch": 358.74498458774957,
+   "sparse_triton": 98.98074375486922,
+   "triton_fused_attn": 50.305575315757835,
+   "triton_index_scores": 13.239447774894739,
+   "topk_only": 35.435720664216646,
+   "bytes_per_token": {
+    "dense": 4096,
+    "latent": 1024,
+    "sparse_latent": 1152
+   }
+  },
+  {
+   "context": 16384,
+   "dense_roofline": 47.058937430847436,
+   "dense": 162.5394826864495,
+   "latent": 789.9100788295528,
+   "sparse_torch": 339.4067483074838,
+   "sparse_triton": 114.2130747362847,
+   "triton_fused_attn": 49.83553499012262,
+   "triton_index_scores": 14.931999984918884,
+   "topk_only": 49.445539761243204,
+   "bytes_per_token": {
+    "dense": 4096,
+    "latent": 1024,
+    "sparse_latent": 1152
+   }
+  },
+  {
+   "context": 32768,
+   "dense_roofline": 94.11787486169487,
+   "dense": 307.31317909140336,
+   "latent": 1978.281187250259,
+   "sparse_torch": 395.0820597469942,
+   "sparse_triton": 161.83168908460536,
+   "triton_fused_attn": 49.16964762355432,
+   "triton_index_scores": 16.61020688091715,
+   "topk_only": 96.0518345801339,
+   "bytes_per_token": {
+    "dense": 4096,
+    "latent": 1024,
+    "sparse_latent": 1152
+   }
+  },
+  {
+   "context": 65536,
+   "dense_roofline": 188.23574972338974,
+   "dense": 588.1027150056,
+   "latent": 4094.980652133624,
+   "sparse_torch": 328.2412364914454,
+   "sparse_triton": 179.2817393725718,
+   "triton_fused_attn": 49.00722634371522,
+   "triton_index_scores": 19.38334007274126,
+   "topk_only": 110.89117295611531,
+   "bytes_per_token": {
+    "dense": 4096,
+    "latent": 1024,
+    "sparse_latent": 1152
+   }
+  },
+  {
+   "context": 131072,
+   "dense_roofline": 376.4714994467795,
+   "dense": 1127.3177938258393,
+   "latent": 8408.745724221933,
+   "sparse_torch": 336.45903392242815,
+   "sparse_triton": 187.8310208172761,
+   "triton_fused_attn": 52.12432166018824,
+   "triton_index_scores": 23.809215005155636,
+   "topk_only": 111.89748415193225,
+   "bytes_per_token": {
+    "dense": 4096,
+    "latent": 1024,
+    "sparse_latent": 1152
+   }
+  }
+ ]
+}

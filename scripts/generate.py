@@ -22,12 +22,17 @@ def main():
     p.add_argument("--raw", action="store_true", help="plain completion, no chat template")
     p.add_argument("--attn", default="eager", choices=["eager", "sdpa"])
     p.add_argument("--latent", default=None, help="path to a trained latent.pt (MLA conversion)")
+    p.add_argument("--indexer", default=None, help="path to a trained indexer.pt (sparse attention)")
+    p.add_argument("--topk", type=int, default=2048)
     args = p.parse_args()
 
     model = load_qwen3(args.model)
     model.attn_impl = args.attn
     if args.latent:
         print(f"[latent KV rank {model.load_latent(args.latent)}]")
+    if args.indexer:
+        model.load_indexer(args.indexer, topk=args.topk)
+        print(f"[sparse attention, top-{args.topk}]")
     tok = load_tokenizer(model)
     prompt = args.prompt if args.raw else chat_prompt(args.prompt)
 

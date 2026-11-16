@@ -38,8 +38,7 @@ def generate(
     stop_ids = {tokenizer.token_to_id(t) for t in stop_tokens} - {None}
     gen = torch.Generator(device=device).manual_seed(seed) if seed is not None else None
 
-    cache = KVCache(model.cfg, 1, len(ids) + max_new_tokens, device, model.embed.weight.dtype,
-                    latent_rank=model.latent_rank)
+    cache = model.make_cache(1, len(ids) + max_new_tokens)
     x = torch.tensor([ids], device=device)
     out: list[int] = []
     pos = 0

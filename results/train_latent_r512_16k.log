@@ -1,0 +1,41 @@
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files: 100%|##########| 9/9 [00:00<00:00, 2569.34it/s]
+trainable latent params: 58.7M  (rank 512, cache 4.0x smaller)
+[eval     0] val KL 0.1265  val ppl student 20.067 / teacher 20.195  wikitext ppl@4k 15.015
+step     0  KL 0.1269  gnorm 2.108  lr 5.00e-06  3.5K tok/s  mem 8.6GiB
+step    10  KL 0.1091  gnorm 1.190  lr 5.50e-05  3.4K tok/s  mem 9.1GiB
+step    20  KL 0.1225  gnorm 1.173  lr 1.00e-04  3.3K tok/s  mem 9.1GiB
+step    30  KL 0.1165  gnorm 1.357  lr 9.97e-05  3.3K tok/s  mem 9.1GiB
+step    40  KL 0.1234  gnorm 1.315  lr 9.89e-05  3.4K tok/s  mem 9.1GiB
+[eval    50] val KL 0.1151  val ppl student 20.160 / teacher 20.195  wikitext ppl@4k 15.529
+step    50  KL 0.1147  gnorm 1.385  lr 9.75e-05  3.2K tok/s  mem 9.1GiB
+step    60  KL 0.1123  gnorm 1.558  lr 9.55e-05  3.2K tok/s  mem 9.1GiB
+step    70  KL 0.1219  gnorm 1.386  lr 9.31e-05  3.2K tok/s  mem 9.1GiB
+step    80  KL 0.1268  gnorm 1.471  lr 9.02e-05  3.3K tok/s  mem 9.1GiB
+step    90  KL 0.1141  gnorm 1.230  lr 8.68e-05  3.3K tok/s  mem 9.1GiB
+[eval   100] val KL 0.1164  val ppl student 20.440 / teacher 20.195  wikitext ppl@4k 15.418
+step   100  KL 0.1149  gnorm 1.609  lr 8.31e-05  3.2K tok/s  mem 9.1GiB
+step   110  KL 0.1863  gnorm 2.787  lr 7.89e-05  3.2K tok/s  mem 9.1GiB
+step   120  KL 0.1191  gnorm 1.201  lr 7.45e-05  3.2K tok/s  mem 9.1GiB
+step   130  KL 0.1082  gnorm 0.986  lr 6.99e-05  3.3K tok/s  mem 9.1GiB
+step   140  KL 0.1265  gnorm 1.190  lr 6.50e-05  3.3K tok/s  mem 9.1GiB
+[eval   150] val KL 0.1059  val ppl student 19.947 / teacher 20.195  wikitext ppl@4k 14.982
+step   150  KL 0.1225  gnorm 1.247  lr 6.00e-05  3.2K tok/s  mem 9.1GiB
+step   160  KL 0.1192  gnorm 1.173  lr 5.50e-05  3.2K tok/s  mem 9.1GiB
+step   170  KL 0.1164  gnorm 4.090  lr 5.00e-05  3.2K tok/s  mem 9.1GiB
+step   180  KL 0.1049  gnorm 1.015  lr 4.50e-05  3.3K tok/s  mem 9.1GiB
+step   190  KL 0.1259  gnorm 1.056  lr 4.01e-05  3.3K tok/s  mem 9.1GiB
+[eval   200] val KL 0.1001  val ppl student 20.006 / teacher 20.195  wikitext ppl@4k 14.995
+step   200  KL 0.0896  gnorm 0.908  lr 3.55e-05  3.2K tok/s  mem 9.1GiB
+step   210  KL 0.1133  gnorm 0.981  lr 3.11e-05  3.2K tok/s  mem 9.1GiB
+step   220  KL 0.1089  gnorm 0.890  lr 2.69e-05  3.3K tok/s  mem 9.1GiB
+step   230  KL 0.1743  gnorm 1.399  lr 2.32e-05  3.3K tok/s  mem 9.1GiB
+step   240  KL 0.1101  gnorm 0.907  lr 1.98e-05  3.3K tok/s  mem 9.1GiB
+[eval   250] val KL 0.0957  val ppl student 19.877 / teacher 20.195  wikitext ppl@4k 15.038
+step   250  KL 0.0957  gnorm 0.837  lr 1.69e-05  3.2K tok/s  mem 9.1GiB
+step   260  KL 0.1230  gnorm 1.038  lr 1.45e-05  3.2K tok/s  mem 9.1GiB
+step   270  KL 0.0973  gnorm 0.905  lr 1.25e-05  3.3K tok/s  mem 9.1GiB
+step   280  KL 0.1065  gnorm 1.126  lr 1.11e-05  3.3K tok/s  mem 9.1GiB
+step   290  KL 0.1077  gnorm 0.802  lr 1.03e-05  3.3K tok/s  mem 9.1GiB
+step   299  KL 0.1053  gnorm 0.817  lr 1.00e-05  3.3K tok/s  mem 9.1GiB
+[eval   300] val KL 0.0940  val ppl student 19.966 / teacher 20.195  wikitext ppl@4k 15.017
+done; saved checkpoints\latent_r512_16k\latent.pt
