@@ -21,7 +21,7 @@ FIG = R / "figures"
 # One colour per method everywhere (validated categorical palette); text stays in ink.
 BLUE, ORANGE, AQUA, YELLOW, MAGENTA = "#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"
 GRAY = "#8a8984"
-INK, INK2, GRID, SURFACE, WASH = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb", "#f3f1ec"
+INK, INK2, GRID, SURFACE, WASH = "#161614", "#5f5d57", "#dedad0", "#f7f5f0", "#ebe7dd"  # matches the site
 SERIF, SANS = "Georgia", "Segoe UI"
 SEQ = LinearSegmentedColormap.from_list("seq", [SURFACE, "#9cc3f0", BLUE, "#0d2f5c"])
 
@@ -258,7 +258,7 @@ def fig_quality():
                 if acc > 0:
                     bx.add_patch(Rectangle((x + 0.08, row - 0.36), 0.84, 0.72, fc=color, alpha=acc, ec="none"))
                 else:
-                    bx.add_patch(Rectangle((x + 0.08, row - 0.36), 0.84, 0.72, fc=SURFACE, ec="#cfcdc6", lw=0.9))
+                    bx.add_patch(Rectangle((x + 0.08, row - 0.36), 0.84, 0.72, fc=SURFACE, ec="#cdc8bb", lw=0.9))
         bx.text(-1.2, row, name, ha="right", va="center", fontsize=10)
         bx.text(len(lengths) * (nd + 2) - 1, row, f"{np.mean(accs):.0%}", ha="left", va="center", fontsize=10,
                 color=INK2)
@@ -313,7 +313,7 @@ def fig_kernel():
 
     # One Triton program.
     ax.add_patch(FancyBboxPatch((2.5, -1.5), 105, 32.5, boxstyle="round,pad=0,rounding_size=1.2", fc=WASH,
-                                ec="#cfcdc6", lw=1.1, ls=(0, (5, 4))))
+                                ec="#cdc8bb", lw=1.1, ls=(0, (5, 4))))
     ax.text(4, -0.6, "inside one Triton program: the rebuilt keys and values exist only here "
             "and are never written back to GPU memory", fontsize=9, color=INK2, va="bottom")
     arrow(9.5, 35.2, 9.5, 28.2)
@@ -326,15 +326,15 @@ def fig_kernel():
     box(28, 18.5, 8, 6, BLUE, "keys", None, grid=(4, 3))
     box(28, 9.5, 8, 6, BLUE, None, "values\n32 x 128 each", grid=(4, 3))
     arrow(37.5, 21.5, 44.5, 21.5)
-    box(46, 18.5, 15, 6, SURFACE, "normalise + rotate", None, ec="#b9b8b2")
+    box(46, 18.5, 15, 6, SURFACE, "normalise + rotate", None, ec="#b5b0a3")
     ax.text(53.5, 21.5, "RMSNorm, RoPE\nfrom position", ha="center", va="center", fontsize=8.8, color=INK2,
             linespacing=1.3)
     arrow(62.5, 21.5, 69.5, 21.5)
-    box(71, 18.5, 11, 6, SURFACE, "scores", None, ec="#b9b8b2")
+    box(71, 18.5, 11, 6, SURFACE, "scores", None, ec="#b5b0a3")
     ax.text(76.5, 21.5, "query · key", ha="center", va="center", fontsize=8.8, color=INK2)
     arrow(83.5, 21.5, 89.5, 19.0, rad=-0.1)
     arrow(37.5, 12.5, 89.5, 14.0, rad=0.04)
-    box(91, 10.5, 14, 11, SURFACE, "running softmax", None, ec="#b9b8b2")
+    box(91, 10.5, 14, 11, SURFACE, "running softmax", None, ec="#b5b0a3")
     ax.text(98, 16, "keep max, sum,\nweighted values;\nthen next 32 rows", ha="center", va="center", fontsize=8.8,
             color=INK2, linespacing=1.3)
     headline(fig, "One kernel: gather, rebuild, attend",
