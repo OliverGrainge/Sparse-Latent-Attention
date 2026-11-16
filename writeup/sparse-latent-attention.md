@@ -142,4 +142,4 @@ The fused kernel takes about 50 µs per layer whether the context is 2K or
 - Still missing: a sparse kernel for prompt processing, a top-k kernel,
   training beyond 16K, and batching.
 
-Code: [github.com/OliverGrainge/sparse-latent-attention](https://github.com/OliverGrainge/sparse-latent-attention)
+Code: [github.com/OliverGrainge/Sparse-Latent-Attention](https://github.com/OliverGrainge/Sparse-Latent-Attention)
