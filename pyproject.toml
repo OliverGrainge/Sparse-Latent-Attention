@@ -1,0 +1,44 @@
+[project]
+name = "sparse-latent-attention"
+version = "0.1.0"
+description = "A clean, native-PyTorch reimplementation of sparse attention with a distilled attention indexer."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch>=2.9",
+    "safetensors>=0.4",
+    "huggingface-hub>=0.30",
+    "tokenizers>=0.21",
+    "datasets>=3.0",
+    "numpy",
+    "tqdm",
+]
+
+[dependency-groups]
+dev = [
+    "matplotlib>=3.11.2",
+    "pytest>=8",
+    # Reference implementation, used only in tests to check our model matches.
+    "transformers>=4.51",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sla"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

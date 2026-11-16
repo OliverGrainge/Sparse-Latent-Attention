@@ -1,0 +1,117 @@
+﻿
+trainable latent params: 58.7M  (rank 512, cache 4.0x smaller)
+[eval     0] val KL 3.2126  val ppl student 826.593 / teacher 18.758  wikitext ppl@4k 1228.866
+step     0  KL 2.9683  gnorm 552.415  lr 6.00e-06  7.3K tok/s  mem 16.7GiB
+step    10  KL 0.3931  gnorm 6.114  lr 6.60e-05  7.5K tok/s  mem 17.1GiB
+step    20  KL 0.2810  gnorm 3.506  lr 1.26e-04  7.5K tok/s  mem 17.1GiB
+step    30  KL 0.2376  gnorm 3.198  lr 1.86e-04  7.5K tok/s  mem 17.1GiB
+step    40  KL 0.2645  gnorm 3.724  lr 2.46e-04  7.5K tok/s  mem 17.1GiB
+step    50  KL 0.4403  gnorm 8.511  lr 3.00e-04  7.5K tok/s  mem 17.1GiB
+step    60  KL 0.3055  gnorm 3.750  lr 3.00e-04  7.4K tok/s  mem 17.1GiB
+step    70  KL 0.2647  gnorm 2.860  lr 3.00e-04  7.4K tok/s  mem 17.1GiB
+step    80  KL 0.3368  gnorm 4.179  lr 2.99e-04  7.4K tok/s  mem 17.1GiB
+step    90  KL 0.2810  gnorm 3.169  lr 2.99e-04  7.4K tok/s  mem 17.1GiB
+[eval   100] val KL 0.2824  val ppl student 21.101 / teacher 18.758  wikitext ppl@4k 22.561
+step   100  KL 0.3056  gnorm 3.322  lr 2.98e-04  6.6K tok/s  mem 17.1GiB
+step   110  KL 0.2903  gnorm 5.310  lr 2.97e-04  6.6K tok/s  mem 17.1GiB
+step   120  KL 0.2807  gnorm 2.490  lr 2.96e-04  6.7K tok/s  mem 17.1GiB
+step   130  KL 0.4500  gnorm 5.901  lr 2.95e-04  6.7K tok/s  mem 17.1GiB
+step   140  KL 0.2512  gnorm 2.624  lr 2.94e-04  6.8K tok/s  mem 17.1GiB
+step   150  KL 0.2744  gnorm 2.549  lr 2.93e-04  6.8K tok/s  mem 17.1GiB
+step   160  KL 0.2642  gnorm 2.510  lr 2.91e-04  6.9K tok/s  mem 17.1GiB
+step   170  KL 0.3228  gnorm 3.431  lr 2.90e-04  6.9K tok/s  mem 17.1GiB
+step   180  KL 0.2890  gnorm 3.186  lr 2.88e-04  6.9K tok/s  mem 17.1GiB
+step   190  KL 0.2865  gnorm 2.529  lr 2.86e-04  7.0K tok/s  mem 17.1GiB
+[eval   200] val KL 0.2851  val ppl student 21.091 / teacher 18.758  wikitext ppl@4k 17.747
+step   200  KL 0.2656  gnorm 2.055  lr 2.84e-04  6.6K tok/s  mem 17.1GiB
+step   210  KL 0.2481  gnorm 2.240  lr 2.82e-04  6.6K tok/s  mem 17.1GiB
+step   220  KL 0.2728  gnorm 2.681  lr 2.79e-04  6.6K tok/s  mem 17.1GiB
+step   230  KL 0.2598  gnorm 2.011  lr 2.77e-04  6.7K tok/s  mem 17.1GiB
+step   240  KL 0.2470  gnorm 1.769  lr 2.74e-04  6.7K tok/s  mem 17.1GiB
+step   250  KL 0.2469  gnorm 2.095  lr 2.72e-04  6.7K tok/s  mem 17.1GiB
+step   260  KL 0.2792  gnorm 1.992  lr 2.69e-04  6.7K tok/s  mem 17.1GiB
+step   270  KL 0.2499  gnorm 2.294  lr 2.66e-04  6.8K tok/s  mem 17.1GiB
+step   280  KL 0.2560  gnorm 2.786  lr 2.63e-04  6.8K tok/s  mem 17.1GiB
+step   290  KL 0.2344  gnorm 2.313  lr 2.60e-04  6.8K tok/s  mem 17.1GiB
+[eval   300] val KL 0.2403  val ppl student 19.905 / teacher 18.758  wikitext ppl@4k 16.700
+step   300  KL 0.3032  gnorm 2.511  lr 2.56e-04  6.6K tok/s  mem 17.1GiB
+step   310  KL 0.2023  gnorm 1.705  lr 2.53e-04  6.6K tok/s  mem 17.1GiB
+step   320  KL 0.2169  gnorm 1.776  lr 2.50e-04  6.6K tok/s  mem 17.1GiB
+step   330  KL 0.2705  gnorm 2.428  lr 2.46e-04  6.6K tok/s  mem 17.1GiB
+step   340  KL 0.3714  gnorm 2.349  lr 2.43e-04  6.7K tok/s  mem 17.1GiB
+step   350  KL 0.1973  gnorm 1.593  lr 2.39e-04  6.7K tok/s  mem 17.1GiB
+step   360  KL 0.1876  gnorm 2.092  lr 2.35e-04  6.7K tok/s  mem 17.1GiB
+step   370  KL 0.2556  gnorm 1.852  lr 2.31e-04  6.7K tok/s  mem 17.1GiB
+step   380  KL 0.2064  gnorm 1.646  lr 2.27e-04  6.7K tok/s  mem 17.1GiB
+step   390  KL 0.2029  gnorm 2.105  lr 2.23e-04  6.7K tok/s  mem 17.1GiB
+[eval   400] val KL 0.2102  val ppl student 19.296 / teacher 18.758  wikitext ppl@4k 15.855
+step   400  KL 0.1990  gnorm 1.802  lr 2.19e-04  6.6K tok/s  mem 17.1GiB
+step   410  KL 0.2648  gnorm 5.148  lr 2.15e-04  6.6K tok/s  mem 17.1GiB
+step   420  KL 0.2086  gnorm 2.022  lr 2.11e-04  6.6K tok/s  mem 17.1GiB
+step   430  KL 0.2092  gnorm 2.215  lr 2.07e-04  6.6K tok/s  mem 17.1GiB
+step   440  KL 0.2486  gnorm 2.201  lr 2.02e-04  6.6K tok/s  mem 17.1GiB
+step   450  KL 0.1871  gnorm 1.770  lr 1.98e-04  6.6K tok/s  mem 17.1GiB
+step   460  KL 0.2233  gnorm 2.200  lr 1.94e-04  6.7K tok/s  mem 17.1GiB
+step   470  KL 0.1976  gnorm 1.556  lr 1.89e-04  6.7K tok/s  mem 17.1GiB
+step   480  KL 0.2058  gnorm 1.786  lr 1.85e-04  6.7K tok/s  mem 17.1GiB
+step   490  KL 0.1795  gnorm 1.788  lr 1.81e-04  6.7K tok/s  mem 17.1GiB
+[eval   500] val KL 0.1874  val ppl student 19.126 / teacher 18.758  wikitext ppl@4k 16.353
+step   500  KL 0.1884  gnorm 1.577  lr 1.76e-04  6.6K tok/s  mem 17.1GiB
+step   510  KL 0.1806  gnorm 1.437  lr 1.72e-04  6.6K tok/s  mem 17.1GiB
+step   520  KL 0.1642  gnorm 1.405  lr 1.67e-04  6.6K tok/s  mem 17.1GiB
+step   530  KL 0.1863  gnorm 1.616  lr 1.63e-04  6.6K tok/s  mem 17.1GiB
+step   540  KL 0.1660  gnorm 1.360  lr 1.58e-04  6.6K tok/s  mem 17.1GiB
+step   550  KL 0.1594  gnorm 1.381  lr 1.54e-04  6.6K tok/s  mem 17.1GiB
+step   560  KL 0.1818  gnorm 1.722  lr 1.49e-04  6.6K tok/s  mem 17.1GiB
+step   570  KL 0.1878  gnorm 1.750  lr 1.45e-04  6.7K tok/s  mem 17.1GiB
+step   580  KL 0.1754  gnorm 1.579  lr 1.41e-04  6.7K tok/s  mem 17.1GiB
+step   590  KL 0.1661  gnorm 1.767  lr 1.36e-04  6.7K tok/s  mem 17.1GiB
+[eval   600] val KL 0.1665  val ppl student 19.136 / teacher 18.758  wikitext ppl@4k 15.533
+step   600  KL 0.1510  gnorm 1.324  lr 1.32e-04  6.6K tok/s  mem 17.1GiB
+step   610  KL 0.1651  gnorm 1.255  lr 1.28e-04  6.6K tok/s  mem 17.1GiB
+step   620  KL 0.1715  gnorm 1.718  lr 1.23e-04  6.6K tok/s  mem 17.1GiB
+step   630  KL 0.1461  gnorm 1.444  lr 1.19e-04  6.6K tok/s  mem 17.1GiB
+step   640  KL 0.1633  gnorm 1.673  lr 1.15e-04  6.6K tok/s  mem 17.1GiB
+step   650  KL 0.1576  gnorm 1.312  lr 1.11e-04  6.6K tok/s  mem 17.1GiB
+step   660  KL 0.1628  gnorm 1.302  lr 1.07e-04  6.6K tok/s  mem 17.1GiB
+step   670  KL 0.2715  gnorm 1.679  lr 1.03e-04  6.6K tok/s  mem 17.1GiB
+step   680  KL 0.1971  gnorm 1.875  lr 9.88e-05  6.6K tok/s  mem 17.1GiB
+step   690  KL 0.1585  gnorm 1.512  lr 9.49e-05  6.7K tok/s  mem 17.1GiB
+[eval   700] val KL 0.1524  val ppl student 19.379 / teacher 18.758  wikitext ppl@4k 15.705
+step   700  KL 0.1386  gnorm 1.227  lr 9.12e-05  6.6K tok/s  mem 17.1GiB
+step   710  KL 0.1507  gnorm 1.479  lr 8.75e-05  6.6K tok/s  mem 17.1GiB
+step   720  KL 0.1598  gnorm 2.067  lr 8.39e-05  6.6K tok/s  mem 17.1GiB
+step   730  KL 0.1358  gnorm 1.315  lr 8.03e-05  6.6K tok/s  mem 17.1GiB
+step   740  KL 0.1391  gnorm 1.250  lr 7.69e-05  6.6K tok/s  mem 17.1GiB
+step   750  KL 0.1259  gnorm 1.045  lr 7.36e-05  6.6K tok/s  mem 17.1GiB
+step   760  KL 0.1457  gnorm 1.353  lr 7.03e-05  6.6K tok/s  mem 17.1GiB
+step   770  KL 0.1406  gnorm 1.196  lr 6.72e-05  6.6K tok/s  mem 17.1GiB
+step   780  KL 0.1388  gnorm 1.246  lr 6.42e-05  6.6K tok/s  mem 17.1GiB
+step   790  KL 0.1429  gnorm 1.362  lr 6.13e-05  6.6K tok/s  mem 17.1GiB
+[eval   800] val KL 0.1382  val ppl student 18.759 / teacher 18.758  wikitext ppl@4k 15.150
+step   800  KL 0.1373  gnorm 1.313  lr 5.85e-05  6.6K tok/s  mem 17.1GiB
+step   810  KL 0.1747  gnorm 1.805  lr 5.58e-05  6.6K tok/s  mem 17.1GiB
+step   820  KL 0.1276  gnorm 1.202  lr 5.32e-05  6.6K tok/s  mem 17.1GiB
+step   830  KL 0.1352  gnorm 1.129  lr 5.08e-05  6.6K tok/s  mem 17.1GiB
+step   840  KL 0.1420  gnorm 1.274  lr 4.85e-05  6.6K tok/s  mem 17.1GiB
+step   850  KL 0.1192  gnorm 1.213  lr 4.63e-05  6.6K tok/s  mem 17.1GiB
+step   860  KL 0.1444  gnorm 1.432  lr 4.42e-05  6.6K tok/s  mem 17.1GiB
+step   870  KL 0.1342  gnorm 1.256  lr 4.23e-05  6.6K tok/s  mem 17.1GiB
+step   880  KL 0.1291  gnorm 1.170  lr 4.05e-05  6.6K tok/s  mem 17.1GiB
+step   890  KL 0.1248  gnorm 1.158  lr 3.88e-05  6.6K tok/s  mem 17.1GiB
+[eval   900] val KL 0.1291  val ppl student 18.708 / teacher 18.758  wikitext ppl@4k 15.217
+step   900  KL 0.1182  gnorm 1.079  lr 3.73e-05  6.6K tok/s  mem 17.1GiB
+step   910  KL 0.1273  gnorm 1.197  lr 3.59e-05  6.6K tok/s  mem 17.1GiB
+step   920  KL 0.1538  gnorm 1.213  lr 3.47e-05  6.6K tok/s  mem 17.1GiB
+step   930  KL 0.1297  gnorm 1.225  lr 3.36e-05  6.6K tok/s  mem 17.1GiB
+step   940  KL 0.1290  gnorm 1.280  lr 3.26e-05  6.6K tok/s  mem 17.1GiB
+step   950  KL 0.1145  gnorm 1.272  lr 3.18e-05  6.6K tok/s  mem 17.1GiB
+step   960  KL 0.1243  gnorm 1.107  lr 3.12e-05  6.6K tok/s  mem 17.1GiB
+step   970  KL 0.1306  gnorm 1.641  lr 3.07e-05  6.6K tok/s  mem 17.1GiB
+step   980  KL 0.1576  gnorm 1.438  lr 3.03e-05  6.6K tok/s  mem 17.1GiB
+step   990  KL 0.1258  gnorm 1.135  lr 3.01e-05  6.6K tok/s  mem 17.1GiB
+step   999  KL 0.1192  gnorm 1.066  lr 3.00e-05  6.6K tok/s  mem 17.1GiB
+[eval  1000] val KL 0.1237  val ppl student 18.562 / teacher 18.758  wikitext ppl@4k 15.015
+done; saved checkpoints\latent_r512\latent.pt
+
+
